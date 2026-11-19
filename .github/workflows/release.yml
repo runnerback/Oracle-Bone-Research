@@ -1,0 +1,46 @@
+name: Release skill packages
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.event.created && !github.event.deleted
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build and check both packages
+        run: |
+          python3 tools/package_skill.py standard
+          python3 tools/package_skill.py workbuddy --author "Oracle Bone Research" --version "${GITHUB_REF_NAME#v}"
+          unzip -tq dist/oracle-bone-research-standard.zip
+          unzip -tq dist/oracle-bone-research-workbuddy.zip
+
+      - name: Publish the packages on GitHub Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          tag="$GITHUB_REF_NAME"
+          if draft=$(gh release view "$tag" --json isDraft --jq '.isDraft'); then
+            if [[ "$draft" == false ]]; then
+              echo "Release $tag has already been published."
+              exit 0
+            fi
+          else
+            gh release create "$tag" --verify-tag --draft --title "$tag" --generate-notes
+          fi
+          gh release upload "$tag" dist/oracle-bone-research-{standard,workbuddy}.zip --clobber
+          gh release edit "$tag" --draft=false

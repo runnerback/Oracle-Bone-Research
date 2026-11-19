@@ -8,6 +8,8 @@ Give the skill a rubbing, an inscription number, or a paper. It helps you locate
 
 ## Supported tools and installation
 
+Download the standard or WorkBuddy ZIP from the latest release, then follow the instructions for your tool below. [Download the latest release](https://github.com/runnerback/Oracle-Bone-Research/releases/latest)
+
 For tools that load a skills directory, copy the entire `skills/oracle-bone-research/` folder so the scripts and data travel with the instructions. For tools that accept a ZIP, run the commands below from the repository root. The packager uses the Python 3.8+ standard library and writes both archives to `dist/`. [Skill instructions](skills/oracle-bone-research/SKILL.md)
 
 ```sh
@@ -75,6 +77,13 @@ The project’s original code and skill instructions are available under the **M
 Bundled upstream materials retain their own terms. OBIMD code uses the MIT License. The OBIMD repository version that supplied these annotations specifies academic research use and requires permission from the authors for commercial use. AlphaOracle uses Apache-2.0. Its third-party components and images retain the terms of their respective sources. [Attribution and citation details](skills/oracle-bone-research/references/acknowledgments.md)
 
 ## Packages and research files
+
+To publish a version, create an annotated `vMAJOR.MINOR.PATCH` tag on the release commit already pushed to `main`, then push that tag. For example, the commands below publish `v0.3.1`. GitHub Actions builds both packages from the tag, generates release notes, and publishes the release once the assets are attached.
+
+```sh
+git tag -a v0.3.1 -m "Release v0.3.1"
+git push origin refs/tags/v0.3.1
+```
 
 Both ZIPs include the research scripts, main-character annotations, five example images, and upstream licenses. The repository also includes the training tasks, model sources, and upstream documentation. Keep your own papers, rubbings, and crops in `research-data/`, which Git ignores. External material remains subject to its source terms. The Schwartz chapter carries a [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
 

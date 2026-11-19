@@ -8,6 +8,8 @@
 
 ## 支持的工具与安装方式
 
+最新发布页提供标准版和 WorkBuddy 版 ZIP，可直接下载后按下表安装。[下载最新版本](https://github.com/runnerback/Oracle-Bone-Research/releases/latest)
+
 项目技能目录为 `skills/oracle-bone-research/`。按目录安装时，请复制整个文件夹，保留其中的脚本和数据。需要 ZIP 的平台可在仓库根目录运行以下命令生成安装包，产物位于 `dist/`。打包只需 Python 3.8 或更高版本的标准库。[技能正文](skills/oracle-bone-research/SKILL.md)
 
 ```sh
@@ -77,6 +79,13 @@ python3 skills/oracle-bone-research/scripts/glyph_case.py \
 随包上游材料保留各自的许可。OBIMD 代码采用 MIT，其 GitHub 仓库随附标注按该版本的说明供学术研究使用，商用需取得作者许可。AlphaOracle 仓库采用 Apache-2.0，其中的第三方组件和图像依各自来源条款使用。[完整声明与引用](skills/oracle-bone-research/references/acknowledgments.md)
 
 ## 发布与资料
+
+维护者在已推送到 `main` 的发布提交上创建并推送新标签。标签格式为 `v主版本.次版本.修订号`。例如，下列命令发布 `v0.3.1`。GitHub Actions 会按该标签构建两个安装包，生成发布说明，并在附件上传完成后公开 Release。
+
+```sh
+git tag -a v0.3.1 -m "Release v0.3.1"
+git push origin refs/tags/v0.3.1
+```
 
 两个安装包均包含本地研究脚本、主字标注、五张示例图与上游许可。训练任务、模型源码和完整的上游说明随项目源码提供。研究者可将自己的论文、拓片和裁图放在 `research-data/`，该目录已从 Git 默认跟踪范围中排除。外部资料的使用依各来源的许可。Schwartz 章节标注为 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)。
 
