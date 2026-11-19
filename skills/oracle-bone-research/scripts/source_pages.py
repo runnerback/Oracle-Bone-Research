@@ -28,17 +28,12 @@ def search_pages(document, args):
             text = text_page.get_text_bounded().replace("\r\n", "\n").replace("\r", "\n")
         if text.strip():
             pages_with_text += 1
-        match = pattern.search(text)
-        if match:
-            start = max(0, match.start() - 24)
-            end = min(len(text), match.end() + 54)
-            item = {"pdf_page": index + 1, "excerpt": " ".join(text[start:end].split())}
+        if pattern.search(text):
+            item = {"pdf_page": index + 1}
             if args.first_printed is not None:
                 item["estimated_printed_page"] = args.first_printed + index
             matches.append(item)
     print(json.dumps({
-        "file": args.pdf.name,
-        "query": args.clause if args.clause is not None else args.term,
         "pages_checked": len(document),
         "pages_with_extractable_text": pages_with_text,
         "matching_pages": matches,
@@ -74,7 +69,9 @@ def main():
     try:
         import pypdfium2 as pdfium
     except ImportError:
-        parser.exit(2, "Install the PDF helper dependency with: python3 -m pip install pypdfium2 Pillow\n")
+        parser.exit(2, "From the skill directory run: python3 -m venv .venv && "
+                       ".venv/bin/python -m pip install -r requirements.txt\n"
+                       "Then run this helper with .venv/bin/python.\n")
     try:
         with pdfium.PdfDocument(args.pdf) as document:
             if args.command == "find":

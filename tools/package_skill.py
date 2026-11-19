@@ -10,15 +10,14 @@ from zipfile import ZIP_DEFLATED, ZipFile
 NAME = "oracle-bone-research"
 ROOT = Path(__file__).resolve().parents[1]
 SKILL = ROOT / "skills" / NAME
+EXAMPLE_PLATES = {"h00052.jpg", "h00659.jpg", "h05377.jpg"}
 RESOURCES = (
     "SKILL.md", "references/sources.md", "references/worked-example.md",
     "references/glyph-case.md", "references/acknowledgments.md",
-    "scripts/source_pages.py", "scripts/glyph_case.py", "LICENSE",
-    "assets/obimd/all_dataset.json", "assets/obimd/LICENSE",
+    "scripts/source_pages.py", "scripts/glyph_case.py", "LICENSE", "requirements.txt",
+    "assets/obimd/LICENSE",
     "assets/alphaoracle/LICENSE", "assets/alphaoracle/CITATION.cff",
     "assets/alphaoracle/images/h00659.jpg", "assets/alphaoracle/images/合52拓片.png",
-    "assets/alphaoracle/images/h00026_190.jpg", "assets/alphaoracle/images/保.png",
-    "assets/alphaoracle/images/安.png",
 )
 
 
@@ -44,7 +43,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("platform", choices=("standard", "workbuddy"))
     parser.add_argument("--author", help="Publisher name for the WorkBuddy package.")
-    parser.add_argument("--version", default="0.3.0", help="WorkBuddy release version.")
+    parser.add_argument("--version", default="0.3.2", help="WorkBuddy release version.")
     parser.add_argument("--out-dir", type=Path, default=ROOT / "dist")
     args = parser.parse_args()
     if args.platform == "workbuddy" and not (args.author and args.author.strip()):
@@ -59,6 +58,11 @@ def main():
         temp_path = Path(temp.name)
     try:
         with ZipFile(temp_path, "w", compression=ZIP_DEFLATED) as archive:
+            with (SKILL / "assets/obimd/all_dataset.json").open(encoding="utf-8") as src:
+                samples = [row for row in json.load(src) if row["name"] in EXAMPLE_PLATES]
+            if {row["name"] for row in samples} != EXAMPLE_PLATES:
+                raise ValueError("Missing OBIMD example plates")
+            archive.writestr(f"{NAME}/assets/obimd/example_plates.json", json.dumps(samples, ensure_ascii=False))
             for filename in files:
                 content = (SKILL / filename).read_bytes()
                 if args.platform == "workbuddy" and filename == "SKILL.md":

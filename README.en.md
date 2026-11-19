@@ -25,7 +25,7 @@ python3 tools/package_skill.py workbuddy --author "Your publisher name"
 | WorkBuddy | In the Skills panel, choose **Add skill → Upload skill** and select `dist/oracle-bone-research-workbuddy.zip`. If you submit it to the Open Platform, set the publisher name with `--author` when building the ZIP. [Installation guide](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market) · [Package specification](https://open.workbuddy.cn/docs/skill) |
 | ByteDance TRAE IDE | Copy the skill folder into the target project’s `.trae/skills/`, then type `/` in chat to select it. In this repository, you can also enable the existing `.agents/skills/` directory in the IDE’s skills settings. [TRAE guide](https://docs.trae.cn/ide_skills) |
 | ByteDance Coze (扣子编程) | Open the skills panel in a project chat, choose **Create skill → Local upload**, and select `dist/oracle-bone-research-standard.zip`. Add the uploaded skill to the current task from **My skills**. [Coze guide](https://docs.coze.cn/guides_using_skill) · [Supported archive formats](https://docs.coze.cn/guides_skill_faq) |
-| ByteDance Doubao (豆包) and other LLM chat tools | For manual use, paste the contents of `SKILL.md` into the chat along with your question. To compare glyphs, run the local example below and supply the crop and JSON record as evidence. |
+| ByteDance Doubao (豆包) and other LLM chat tools | For manual use, paste the contents of `SKILL.md` into the chat along with your question. To compare glyphs, run the local example below and share only the plate number, position, and observations cleared for that chat. |
 
 You can also start with your tool’s PDF reader or provide an image of the relevant page. In a Python environment, the included PDF helper can search a local document and export individual pages as PNGs. [Sources and commands](skills/oracle-bone-research/references/sources.md)
 
@@ -33,10 +33,12 @@ You can also start with your tool’s PDF reader or provide an image of the rele
 
 > Use $oracle-bone-research to find the second glyph in group 1 on Heji 659. Crop it from the AlphaOracle facsimile, find another plate where OBIMD assigns the same label, and explain how to compare the two uses.
 
-The repository and both skill packages include the OBIMD annotations and sample images. With Pillow installed, run this from the repository root.
+The source repository includes the full annotations. Both release ZIPs include the plates needed for this example. From the repository root, set up a virtual environment with Python 3.11 or later and the pinned dependencies. The crop runs offline after setup.
 
 ```sh
-python3 skills/oracle-bone-research/scripts/glyph_case.py \
+python3 -m venv .venv
+.venv/bin/python -m pip install -r skills/oracle-bone-research/requirements.txt
+.venv/bin/python skills/oracle-bone-research/scripts/glyph_case.py \
   --plate h00659.jpg --group 1 --position 2 \
   --crop research-data/h00659-g1-p2.png
 ```
@@ -78,13 +80,13 @@ Bundled upstream materials retain their own terms. OBIMD code uses the MIT Licen
 
 ## Packages and research files
 
-To publish a version, create an annotated `MAJOR.MINOR.PATCH` tag on the release commit already pushed to `main`, then push that tag. For example, the commands below publish `0.3.1`. GitHub Actions builds both packages from the tag, generates release notes, and publishes the release once the assets are attached.
+The target tag for this security update is `0.3.2`. Create an annotated `MAJOR.MINOR.PATCH` tag on the release commit already pushed to `main`, then push the tag. GitHub Actions builds both packages from the tag, generates release notes, and publishes the release once the assets are attached.
 
 ```sh
-git tag -a 0.3.1 -m "Release 0.3.1"
-git push origin refs/tags/0.3.1
+git tag -a 0.3.2 -m "Release 0.3.2"
+git push origin refs/tags/0.3.2
 ```
 
-Both ZIPs include the research scripts, main-character annotations, five example images, and upstream licenses. The repository also includes the training tasks, model sources, and upstream documentation. Keep your own papers, rubbings, and crops in `research-data/`, which Git ignores. External material remains subject to its source terms. The Schwartz chapter carries a [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
+Both release ZIPs include the pinned dependency list, scripts, annotations for Heji 52, 659 and 5377, two plate images, and upstream licenses. Their default occurrence counts cover those three plates. Use `--obimd` with a local source checkout to search the full annotations. The repository also includes the training tasks, model sources, and upstream documentation. Keep your own papers, rubbings, and crops in `research-data/`, which Git ignores. External material remains subject to its source terms. The Schwartz chapter carries a [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
 
 When preparing an award submission, credit the contributors, cite earlier readings, and identify the evidence your research adds.

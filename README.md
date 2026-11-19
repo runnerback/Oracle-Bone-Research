@@ -25,7 +25,7 @@ python3 tools/package_skill.py workbuddy --author "你的发布者名称"
 | WorkBuddy | 在技能面板选择「添加技能 → 上传技能」，导入 `dist/oracle-bone-research-workbuddy.zip`。若提交到开放平台，打包时请用 `--author` 指定发布署名。[安装说明](https://www.workbuddy.cn/docs/workbuddy/From-Beginner-to-Expert-Guide/Function-Description/Skills-Market) · [开放平台规范](https://open.workbuddy.cn/docs/skill) |
 | 字节跳动 TRAE IDE | 将技能文件夹复制到目标项目的 `.trae/skills/` 下，在对话中输入 `/` 选择该技能。使用本仓库时，也可在「设置 → 技能与命令」中启用已有的 `.agents/skills/` 目录。[官方说明](https://docs.trae.cn/ide_skills) |
 | 字节跳动扣子编程（Coze） | 在项目对话框打开「技能 → 创建技能 → 本地上传」，选择 `dist/oracle-bone-research-standard.zip`，再从「我的技能」添加到当前任务。[使用说明](https://docs.coze.cn/guides_using_skill) · [技能包格式](https://docs.coze.cn/guides_skill_faq) |
-| 字节跳动豆包及其他通用 LLM 对话工具 | 手动使用时，把 `SKILL.md` 正文和研究问题一起贴入对话。需要核对字形时，先用下文的本地命令生成裁图和 JSON，再把材料交给模型比较。 |
+| 字节跳动豆包及其他通用 LLM 对话工具 | 手动使用时，把 `SKILL.md` 正文和研究问题一起贴入对话。需要核对字形时，先在本地生成裁图和记录，再向对话提供允许分享的片号、字位和必要观察。 |
 
 使用宿主自带的 PDF 阅读器或直接上传页图即可开始。可运行 Python 的环境还可启用离线页码检索和 PNG 导出，详见[资料与命令](skills/oracle-bone-research/references/sources.md)。
 
@@ -35,10 +35,12 @@ python3 tools/package_skill.py workbuddy --author "你的发布者名称"
 
 > 用 $oracle-bone-research 找出合 659 第 1 组第 2 个字。从 AlphaOracle 摹本裁出字形，查 OBIMD 里还有哪一片标了同一个字，并告诉我应当怎样核对这两处用法。
 
-仓库和技能安装包都自带主字标注及示例图。在装有 Pillow 的 Python 环境中，从项目根目录运行以下命令即可离线裁图。
+源码仓库提供完整主字标注，发布 ZIP 自带复核本例所需的标注和图片。首次使用时，在项目根目录选用 Python 3.11 或更高版本，按锁定清单配置虚拟环境。完成安装后，裁图可离线运行。
 
 ```sh
-python3 skills/oracle-bone-research/scripts/glyph_case.py \
+python3 -m venv .venv
+.venv/bin/python -m pip install -r skills/oracle-bone-research/requirements.txt
+.venv/bin/python skills/oracle-bone-research/scripts/glyph_case.py \
   --plate h00659.jpg --group 1 --position 2 \
   --crop research-data/h00659-g1-p2.png
 ```
@@ -80,13 +82,13 @@ python3 skills/oracle-bone-research/scripts/glyph_case.py \
 
 ## 发布与资料
 
-维护者在已推送到 `main` 的发布提交上创建并推送新标签。标签直接使用三段数字版本号，例如 `0.3.1`。GitHub Actions 会按该标签构建两个安装包，生成发布说明，并在附件上传完成后公开 Release。
+本次安全整改的目标发布标签为 `0.3.2`。维护者在已推送到 `main` 的发布提交上创建并推送标签，使用三段数字版本号。GitHub Actions 会按该标签构建两个安装包，生成发布说明，并在附件上传完成后公开 Release。
 
 ```sh
-git tag -a 0.3.1 -m "Release 0.3.1"
-git push origin refs/tags/0.3.1
+git tag -a 0.3.2 -m "Release 0.3.2"
+git push origin refs/tags/0.3.2
 ```
 
-两个安装包均包含本地研究脚本、主字标注、五张示例图与上游许可。训练任务、模型源码和完整的上游说明随项目源码提供。研究者可将自己的论文、拓片和裁图放在 `research-data/`，该目录已从 Git 默认跟踪范围中排除。外部资料的使用依各来源的许可。Schwartz 章节标注为 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)。
+两个发布 ZIP 含锁定依赖清单、本地脚本、合 52、659、5377 的示例标注、两张整图与上游许可。安装包默认只统计这三片。要用完整数据，可通过 `--obimd` 指定本地源码仓库。训练任务、模型源码和完整的上游说明随项目源码提供。研究者可将自己的论文、拓片和裁图放在 `research-data/`，该目录已从 Git 默认跟踪范围中排除。外部资料的使用依各来源的许可。Schwartz 章节标注为 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)。
 
 整理申奖材料时，保留贡献者署名、文献依据和新增证据，明确指出哪些解释已由前人提出。

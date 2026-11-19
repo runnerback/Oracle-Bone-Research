@@ -6,17 +6,24 @@ from http.client import HTTPException
 from io import BytesIO
 from ipaddress import ip_address
 import json
+import math
 import os
 from pathlib import Path
 import sys
+from urllib.error import HTTPError
 from urllib.parse import urlsplit
-from urllib.request import ProxyHandler, Request, build_opener
+from urllib.request import HTTPRedirectHandler, ProxyHandler, Request, build_opener
 
 
 ASSETS = Path(__file__).resolve().parents[1] / "assets"
 UPSTREAM_ANNOTATIONS = Path("tasks/cluster_sentence/datasets/all_dataset.json")
 PLATE_IMAGES = {"h00659.jpg": "h00659.jpg", "h00052.jpg": "合52拓片.png"}
 TASKS = ("moben_danzi_classify", "tapian_danzi_classify", "dino_search")
+
+
+class NoRedirect(HTTPRedirectHandler):
+    def redirect_request(self, req, fp, code, msg, headers, newurl):
+        raise ValueError("AlphaOracle 服务发生重定向")
 
 
 def occurrence(row, group, position):
@@ -66,7 +73,8 @@ def crop_glyph(image_path, size, box):
     try:
         from PIL import Image
     except ImportError as exc:
-        raise ValueError("裁图需要 Pillow，请先运行 python3 -m pip install Pillow") from exc
+        raise ValueError("请在技能目录内运行 python3 -m venv .venv && "
+                         ".venv/bin/python -m pip install -r requirements.txt，再用该环境运行裁图。") from exc
     x, y, width, height = box
     # A few upstream annotations extend a few pixels beyond the plate.
     bounds = (max(0, x), max(0, y), min(size[0], x + width), min(size[1], y + height))
@@ -83,6 +91,7 @@ def crop_glyph(image_path, size, box):
 
 def query_alpha(server, task, png):
     endpoint = server.rstrip("/") + "/" + task + "/"
+    # The selected service receives only the metadata-free, single-glyph PNG.
     payload = {"image": base64.b64encode(png).decode("ascii")}
     request = Request(endpoint, json.dumps(payload).encode(), {"Content-Type": "application/json"})
     # A system-wide HTTP proxy must not route requests away from a local model server.
@@ -91,16 +100,35 @@ def query_alpha(server, task, png):
         local = ip_address(host).is_loopback
     except ValueError:
         local = host.rstrip(".") == "localhost"
-    opener = build_opener(ProxyHandler({})) if local else build_opener()
+    opener = build_opener(ProxyHandler({}), NoRedirect) if local else build_opener(NoRedirect)
     with opener.open(request, timeout=60) as response:
-        result = json.load(response)
+        body = response.read(1024 * 1024 + 1)
+    if len(body) > 1024 * 1024:
+        raise ValueError("AlphaOracle 响应过大")
+    result = json.loads(body)
     if task == "dino_search":
-        valid = isinstance(result, dict) and isinstance(result.get("items"), list)
+        rows = result.get("items") if isinstance(result, dict) else None
+        text_keys, number_keys = ("label", "w7_key"), ("score",)
     else:
-        valid = isinstance(result, list) and all(isinstance(r, dict) and "Category" in r for r in result)
-    if not valid:
-        raise ValueError(f"{task} 返回的数据与上游示例格式不符")
-    return result
+        rows = result
+        text_keys, number_keys = ("Category",), ("Rank", "Possibility")
+    if not isinstance(rows, list):
+        raise ValueError("AlphaOracle 候选格式异常")
+    candidates = []
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("AlphaOracle 候选格式异常")
+        candidate = {key: row[key] for key in text_keys
+                     if isinstance(row.get(key), str) and 0 < len(row[key]) <= 128
+                     and all(c.isalnum() or c in "._-" for c in row[key])}
+        if not candidate:
+            raise ValueError("AlphaOracle 候选缺少可用的字形标识")
+        for key in number_keys:
+            value = row.get(key)
+            if type(value) is int or (type(value) is float and math.isfinite(value)):
+                candidate[key] = value
+        candidates.append(candidate)
+    return {"items": candidates} if task == "dino_search" else candidates
 
 
 def main():
@@ -129,10 +157,19 @@ def main():
         address = urlsplit(server)
         if address.scheme not in ("http", "https") or not address.hostname:
             parser.error("请为 AlphaOracle 指定 HTTP(S) API 地址")
+        if address.username is not None or address.password is not None or address.query or address.fragment:
+            parser.error("服务根地址不能包含凭证、查询参数或片段")
 
     data_path = args.obimd / UPSTREAM_ANNOTATIONS if args.obimd else ASSETS / "obimd/all_dataset.json"
+    sample = args.obimd is None and not data_path.is_file()
+    if sample:
+        data_path = ASSETS / "obimd/example_plates.json"
     with data_path.open(encoding="utf-8") as src:
-        case = find_case(json.load(src), args.plate, args.group, args.position, args.limit)
+        rows = json.load(src)
+    if sample and not any(row["name"] == args.plate for row in rows):
+        parser.error("此片未收录于随包示例。请用 --obimd 指定含完整标注的本地仓库")
+    case = find_case(rows, args.plate, args.group, args.position, args.limit)
+    case["annotation_scope"] = "bundled_examples" if sample else "local_dataset"
     case["annotations"] = str(data_path)
     if image_path is not None:
         png, bounds = crop_glyph(image_path, case["plate_size_wh"], case["target"]["bbox_xywh"])
@@ -144,12 +181,15 @@ def main():
             case["image"]["crop_png"] = str(args.crop)
     status = 0
     if args.alpha_task:
-        alpha = {"task": args.alpha_task, "server": server}
+        alpha = {"task": args.alpha_task, "server": f"{address.scheme}://{address.netloc}"}
         case["alphaoracle"] = alpha
         try:
             alpha["result"] = query_alpha(server, args.alpha_task, png)
-        except (OSError, ValueError, HTTPException) as exc:
-            alpha["error"] = str(exc)
+        except HTTPError as exc:
+            alpha["error"] = f"AlphaOracle HTTP {exc.code}"
+            status = 1
+        except (OSError, ValueError, HTTPException):
+            alpha["error"] = "AlphaOracle 请求失败或响应不符合接口格式，请核对服务地址与任务。"
             status = 1
     print(json.dumps(case, ensure_ascii=False, indent=2))
     return status
