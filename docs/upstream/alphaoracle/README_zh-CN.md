@@ -1,0 +1,166 @@
+<!-- Oracle Bone Research: adapted the relative link to the integrated project layout. -->
+<div align="center">
+  <img src="https://v1.ax1x.com/2025/10/03/EIkNeV.png" width="200">
+</div>
+
+<div align="center">
+<h3>利用受人类工作流启发的深度学习框架破译甲骨文</h3>
+  <p>刘禹良<sup>*,†</sup>, 管海粟<sup>*</sup>, 王鹏杰<sup>*</sup>, 王欣雨<sup>*</sup>, 万金鹏, 张凯乐, 郑汉东, 刘星辰, 匡嚞玢, 杨焕鑫, 李邦, 刘永革<sup>†</sup>, 金连文<sup>†</sup>, 白翔<sup>†</sup></p>
+<p><sup>*</sup>同等贡献, <sup>†</sup>通讯作者</p>
+</div>
+
+<div align="center">
+
+[![paper](https://img.shields.io/badge/Paper-The%20Innovation-2ea44f)](https://www.sciencedirect.com/science/article/pii/S2666675826002092)
+[![arXiv](https://img.shields.io/badge/arXiv-2607.17849-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2607.17849)
+[![DOI](https://img.shields.io/badge/DOI-10.1016%2Fj.xinn.2026.101462-blue)](https://doi.org/10.1016/j.xinn.2026.101462)
+[![demo](https://img.shields.io/badge/Demo-available-ff9800)](http://vlrlabmonkey.xyz:7685/)
+![version](https://img.shields.io/badge/Version-v1.0-007acc)
+![status](https://img.shields.io/badge/Status-active-00c853)
+[![PII](https://img.shields.io/badge/PII-S2666675826002092-purple)](https://www.sciencedirect.com/science/article/pii/S2666675826002092)
+[![license](https://img.shields.io/badge/License-Apache-green)](LICENSE)
+[![citation](https://img.shields.io/badge/Citation-CFF-informational)](CITATION.cff)
+
+**论文发表于 [The Innovation](https://www.sciencedirect.com/science/article/pii/S2666675826002092)，2026 年。更多补充材料见 [arXiv 预印本](https://arxiv.org/abs/2607.17849)**
+
+[English](README.md) | [中文](README_zh-CN.md)
+
+</div>
+
+
+<!-- <details open><summary>💡 我还有其他您可能感兴趣的项目 ✨。</summary><p>
+    
+> [**Deciphering Oracle Bone Language with Diffusion Models**](https://arxiv.org/abs/2406.00684) <br>
+> 管海粟, 杨焕鑫, 王欣雨, 韩胜伟, 刘永革, 金连文, 白翔, 刘禹良 <br>
+[![github](https://img.shields.io/badge/-Github-black?logo=github)](https://github.com/guanhaisu/OBSD) [![arXiv](https://img.shields.io/badge/Arxiv-2406.00684-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2406.00684) <br>
+    
+> [**Puzzle Pieces Picker: Deciphering Ancient Chinese Characters with Radical Reconstruction**](https://arxiv.org/abs/2406.03019) <br>
+> 王鹏杰, 张凯乐, 王欣雨, 韩胜伟, 刘永革, 金连文, 白翔, 刘禹良 <br>
+[![github](https://img.shields.io/badge/-Github-black?logo=github)](https://github.com/Pengjie-W/Puzzle-Pieces-Picker) [![arXiv](https://img.shields.io/badge/Arxiv-2406.03019-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2406.03019) <br>
+
+> [**An open dataset for oracle bone character recognition and decipherment**](https://www.nature.com/articles/s41597-024-03807-x) <br>
+> 王鹏杰, 张凯乐, 王欣雨, 韩胜伟, 刘永革, 万金鹏, 管海粟, 匡嚞玢, 金连文, 白翔, 刘禹良 <br>
+[![github](https://img.shields.io/badge/-Github-black?logo=github)](https://github.com/Pengjie-W/HUST-OBC) [![arXiv](https://img.shields.io/badge/Scientific_Data-s41597.024.03807-gren.svg?)](https://www.nature.com/articles/s41597-024-03807-x) <br>
+
+> [**An open dataset for the evolution of oracle bone characters: EVOBC**](https://arxiv.org/abs/2401.12467) <br>
+> 管海粟, 万金鹏, 刘禹良, 王鹏杰, 张凯乐, 匡嚞玢, 王欣雨, 白翔, 金连文 <br>
+[![github](https://img.shields.io/badge/-Github-black?logo=github)](https://github.com/RomanticGodVAN/character-Evolution-Dataset) [![arXiv](https://img.shields.io/badge/Arxiv-2401.12467-b31b1b.svg?logo=arXiv)](https://arxiv.org/abs/2401.12467) <br> -->
+
+</p></details>
+
+## 简介
+
+<div align="center">
+  <a href="https://www.sciencedirect.com/science/article/pii/S2666675826002092">
+    <img src="figures/paper.jpg" width="800" alt="AlphaOracle 论文">
+  </a>
+</div>
+
+<div align="justify">
+约 4500 个甲骨文字中仍有约 3000 个尚未释读，主要受卜辞残缺与证据稀疏所限。现有 AI 方法难以复现专家将形体分析、语境语义与文字学论证相结合的研究工作流。我们提出 AlphaOracle，这是一个受人类工作流启发的框架，基于迄今最大规模的数字化语料系统化推进甲骨文释读。其多阶段流程包括：(i) 拓片解析；(ii) 基于部件的形态分析与历时建模；(iii) 结合语义对齐的语境检索；(iv) 面向古典文献的文字学验证。每个阶段都会生成显式且带置信度权重的证据链，最终形成可解释报告，供学者核验。在多个测试字例中，AlphaOracle 的释读结果与专家意见高度一致。在 86 位领域专家参与的研究中，它将分析时间减少了 64%，且 79% 的参与者认为其具有较高实用价值。值得注意的是，AlphaOracle 将 “勞” 字解释为地名或族氏称谓，为商代行政与社会结构研究提供了具体修订线索。这些结果表明，与文字学实践相结合的计算方法能够促进甲骨文研究，并可为其他未释读文字的研究提供概念参考。
+</div>
+
+## 核心功能
+
+- 甲骨文拓片与摹本分析：覆盖字符检测、字符识别、句子切分、句内排序以及翻译为现代汉语等步骤。
+<div align="center">
+  <img src="figures/zh/key1.png" width="600">
+</div>
+- 单字分析与释读：考察甲骨文字形的历时演变，分析部件结构与构形，并生成其形态特征描述。
+<div align="center">
+  <img src="figures/zh/key2.png" width="600">
+</div>
+- 甲骨单字检索：以单个字形图像为查询，在数据库中召回所有形体相近的甲骨文字，并提供该字所在完整拓片或摹本信息。
+<div align="center">
+  <img src="figures/zh/key3.png" width="600">
+</div>
+- 关联文献检索：围绕特定甲骨文字的形体特征与语义，跨越早期传世文献与现代学术成果的双重语料库进行深度检索，呈现最相关的讨论、证据与研究结论。
+<div align="center">
+  <img src="figures/zh/key4.png" width="600">
+</div>
+
+## 使用教程
+
+项目附带 Jupyter Notebook，逐步演示 AlphaOracle 每个 API 的调用方式。Notebook 先定义常用工具与封装函数，再为每项任务分别展示输入输出示例。
+
+[查看示例 Notebook](../../../example/demo.ipynb)
+
+
+## 数据来源
+
+本项目汇聚了丰富的甲骨文资料与相关文献，包括：
+
+### 甲骨文数据库：
+- **拓片与摹本**：
+  - 《甲骨文合集》
+  - 《甲骨文摹本大系》
+  - 《甲骨文校释总集》
+- **字形信息**：
+  - 《新甲骨文编》
+  - 《甲骨文六位数字码检索字库》
+  - 《西周金文字编》
+  - 《春秋文字字形表》
+  - 《战国文字字形表》
+  - 《说文解字》
+  - 殷契文渊（网站）
+  - 国学大师（网站）
+- **释读参考**：
+  - 《古文字诂林》
+  - 《甲骨文诂林》
+- **句子翻译**：
+  - 《甲骨文精粹释译》
+
+### 先秦两汉传世文献：
+- 《汉书》, 《史记》, 《左传》, 《黄帝内经》, 《战国策》, 《淮南子》, 《韩非子》, 《礼记》, 《吕氏春秋》, 《国语》, 《仪礼》, 《庄子》, 《墨子》, 《周礼》, 《孟子》, 《山海经》, 《尚书》, 《荀子》, 《论语》, 《易传》, 《孙膑兵法》, 《老子》, 《孙子兵法》, 《吴子》
+
+### 现代学术文献：
+覆盖甲骨文、古文字、先秦史等相关领域的大量学术论文与研究报告。更多详情请参见[原始数据来源](http://vlrlabmonkey.xyz:7685/wenxian)。
+
+## 视频演示
+
+https://github.com/user-attachments/assets/9cf9e8de-77d4-4b88-9852-f27d4294ec0f
+
+
+我们提供了网站 [AlphaOracle](http://vlrlabmonkey.xyz:7685/?lan=zh) 以便快速体验和使用。
+
+<!-- ## 待办事项
+
+- [x] 演示
+- [ ] API
+- [ ] 模型权重
+- [ ] 推理代码
+- [ ] 完整的释读流程
+- [ ] 训练代码 -->
+
+## 学术声明
+
+我们致力于提供前沿的 AI 辅助。然而，由于固有的技术和数据限制，输出可能包含差异或误解。如果您在任何已发表的作品中引用本系统的见解，请附上适当的致谢，并进行您自己的最终学术验证。
+
+## 许可协议
+
+[Apache License](LICENSE)
+
+## ✏️ 引用
+
+如果本项目对您有帮助，请引用我们的论文：
+
+```BibTeX
+@article{liu2026alphaoracle,
+  title   = {AlphaOracle: Oracle bone script decipherment via human-workflow-inspired deep learning},
+  author  = {Liu, Yuliang and Guan, Haisu and Wang, PengJie and Wang, Xinyu and Wan, Jinpeng and Zhang, Kaile and Zheng, Handong and Liu, Xingchen and Kuang, Zhebin and Yang, Huanxin and Li, Bang and Liu, Yongge and Jin, Lianwen and Bai, Xiang},
+  journal = {The Innovation},
+  pages   = {101462},
+  year    = {2026},
+  month   = {June},
+  issn    = {2666-6758},
+  doi     = {10.1016/j.xinn.2026.101462}
+}
+```
+
+## 🤝 贡献者
+
+<a href="https://github.com/Yuliang-Liu/AlphaOracle/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=Yuliang-Liu/AlphaOracle" />
+</a>
+
+© 2026 AlphaOracle 项目组

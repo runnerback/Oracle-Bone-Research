@@ -1,0 +1,3 @@
+interface:
+  display_name: "甲骨文考释助手"
+  short_description: "按片号与辞号核对字形和辞例，比较前人释读，整理支持证据与反例"
