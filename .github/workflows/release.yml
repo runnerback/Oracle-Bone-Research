@@ -3,7 +3,7 @@ name: Release skill packages
 on:
   push:
     tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write
@@ -24,7 +24,7 @@ jobs:
       - name: Build and check both packages
         run: |
           python3 tools/package_skill.py standard
-          python3 tools/package_skill.py workbuddy --author "Oracle Bone Research" --version "${GITHUB_REF_NAME#v}"
+          python3 tools/package_skill.py workbuddy --author "Oracle Bone Research" --version "$GITHUB_REF_NAME"
           unzip -tq dist/oracle-bone-research-standard.zip
           unzip -tq dist/oracle-bone-research-workbuddy.zip
 

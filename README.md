@@ -80,11 +80,11 @@ python3 skills/oracle-bone-research/scripts/glyph_case.py \
 
 ## 发布与资料
 
-维护者在已推送到 `main` 的发布提交上创建并推送新标签。标签格式为 `v主版本.次版本.修订号`。例如，下列命令发布 `v0.3.1`。GitHub Actions 会按该标签构建两个安装包，生成发布说明，并在附件上传完成后公开 Release。
+维护者在已推送到 `main` 的发布提交上创建并推送新标签。标签直接使用三段数字版本号，例如 `0.3.1`。GitHub Actions 会按该标签构建两个安装包，生成发布说明，并在附件上传完成后公开 Release。
 
 ```sh
-git tag -a v0.3.1 -m "Release v0.3.1"
-git push origin refs/tags/v0.3.1
+git tag -a 0.3.1 -m "Release 0.3.1"
+git push origin refs/tags/0.3.1
 ```
 
 两个安装包均包含本地研究脚本、主字标注、五张示例图与上游许可。训练任务、模型源码和完整的上游说明随项目源码提供。研究者可将自己的论文、拓片和裁图放在 `research-data/`，该目录已从 Git 默认跟踪范围中排除。外部资料的使用依各来源的许可。Schwartz 章节标注为 [CC BY-NC-ND 4.0](https://creativecommons.org/licenses/by-nc-nd/4.0/)。

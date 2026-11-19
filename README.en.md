@@ -78,11 +78,11 @@ Bundled upstream materials retain their own terms. OBIMD code uses the MIT Licen
 
 ## Packages and research files
 
-To publish a version, create an annotated `vMAJOR.MINOR.PATCH` tag on the release commit already pushed to `main`, then push that tag. For example, the commands below publish `v0.3.1`. GitHub Actions builds both packages from the tag, generates release notes, and publishes the release once the assets are attached.
+To publish a version, create an annotated `MAJOR.MINOR.PATCH` tag on the release commit already pushed to `main`, then push that tag. For example, the commands below publish `0.3.1`. GitHub Actions builds both packages from the tag, generates release notes, and publishes the release once the assets are attached.
 
 ```sh
-git tag -a v0.3.1 -m "Release v0.3.1"
-git push origin refs/tags/v0.3.1
+git tag -a 0.3.1 -m "Release 0.3.1"
+git push origin refs/tags/0.3.1
 ```
 
 Both ZIPs include the research scripts, main-character annotations, five example images, and upstream licenses. The repository also includes the training tasks, model sources, and upstream documentation. Keep your own papers, rubbings, and crops in `research-data/`, which Git ignores. External material remains subject to its source terms. The Schwartz chapter carries a [CC BY-NC-ND 4.0 license](https://creativecommons.org/licenses/by-nc-nd/4.0/).
